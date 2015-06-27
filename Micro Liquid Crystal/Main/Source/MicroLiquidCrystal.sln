@@ -1,0 +1,97 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLiquidCrystal", "MicroLiquidCrystal\MicroLiquidCrystal.csproj", "{B4B72543-E638-44F1-B096-9BBB6BD4698B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexTest", "Examples\ComplexTest\ComplexTest.csproj", "{D464A9A4-F259-4601-BFF7-437E343DD1FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{10197750-F2B9-48EC-9775-9B1651CBC618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "Examples\HelloWorld\HelloWorld.csproj", "{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PavelBanskyDemo", "Examples\PavelBanskyDemo\PavelBanskyDemo.csproj", "{946902B0-8FD9-4F39-AE21-C00D936B59B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld_I2C", "Examples\HelloWorld_I2C\HelloWorld_I2C.csproj", "{C0545A5F-4314-43B4-A723-7A0B328CD3AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkClock", "Examples\NetworkClock\NetworkClock.csproj", "{93E33E44-2EF2-40BB-8DF6-618796B7FD68}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs15
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Examples\\HelloWorld\\HelloWorld.csproj
+		SccProjectTopLevelParentUniqueName1 = MicroLiquidCrystal.sln
+		SccProjectName1 = Examples/HelloWorld
+		SccLocalPath1 = Examples\\HelloWorld
+		SccProjectUniqueName2 = Examples\\PavelBanskyDemo\\PavelBanskyDemo.csproj
+		SccProjectTopLevelParentUniqueName2 = MicroLiquidCrystal.sln
+		SccProjectName2 = Examples/PavelBanskyDemo
+		SccLocalPath2 = Examples\\PavelBanskyDemo
+		SccProjectUniqueName3 = MicroLiquidCrystal\\MicroLiquidCrystal.csproj
+		SccProjectName3 = MicroLiquidCrystal
+		SccLocalPath3 = MicroLiquidCrystal
+		SccProjectUniqueName4 = Examples\\ComplexTest\\ComplexTest.csproj
+		SccProjectTopLevelParentUniqueName4 = MicroLiquidCrystal.sln
+		SccProjectName4 = Examples/ComplexTest
+		SccLocalPath4 = Examples\\ComplexTest
+		SccProjectUniqueName5 = Examples\\HelloWorld_I2C\\HelloWorld_I2C.csproj
+		SccProjectTopLevelParentUniqueName5 = MicroLiquidCrystal.sln
+		SccProjectName5 = Examples/HelloWorld_I2C
+		SccLocalPath5 = Examples\\HelloWorld_I2C
+		SccProjectUniqueName6 = Examples\\NetworkClock\\NetworkClock.csproj
+		SccProjectTopLevelParentUniqueName6 = MicroLiquidCrystal.sln
+		SccProjectName6 = Examples/NetworkClock
+		SccLocalPath6 = Examples\\NetworkClock
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D464A9A4-F259-4601-BFF7-437E343DD1FC} = {10197750-F2B9-48EC-9775-9B1651CBC618}
+		{0A30049C-C9C7-4C6E-B073-3013D0F30E5E} = {10197750-F2B9-48EC-9775-9B1651CBC618}
+		{946902B0-8FD9-4F39-AE21-C00D936B59B2} = {10197750-F2B9-48EC-9775-9B1651CBC618}
+		{C0545A5F-4314-43B4-A723-7A0B328CD3AD} = {10197750-F2B9-48EC-9775-9B1651CBC618}
+		{93E33E44-2EF2-40BB-8DF6-618796B7FD68} = {10197750-F2B9-48EC-9775-9B1651CBC618}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = ..
+	EndGlobalSection
+EndGlobal
