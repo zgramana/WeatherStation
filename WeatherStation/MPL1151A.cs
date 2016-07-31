@@ -30,7 +30,7 @@ namespace WeatherStation.Sensors
              * 
              */
             Configuration = spiConfiguration ?? new SPI.Configuration(
-                          (Cpu.Pin) FEZ_Pin.Digital.Di7, 
+                          (Cpu.Pin) FEZ_Pin.Digital.Di10, 
                           false,
                           0,
                           0,

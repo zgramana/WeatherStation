@@ -26,6 +26,9 @@ namespace WeatherStation
             // Enable LCD.
             var display = ConfigureLiquidCrystalDisplay();
             display.Clear();
+            // Turn on backlight
+            var greenBacklight = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.Di51, true);
+            
             ShowMessage("Weather Station;1.0", display);
 
             String message;
@@ -86,12 +89,12 @@ namespace WeatherStation
         private static Lcd ConfigureLiquidCrystalDisplay()
         {
             var transferProvider = new GpioLcdTransferProvider(
-                    (Cpu.Pin)FEZ_Pin.Digital.Di10,
-                    (Cpu.Pin)FEZ_Pin.Digital.Di9,
-                    (Cpu.Pin)FEZ_Pin.Digital.Di3,
-                    (Cpu.Pin)FEZ_Pin.Digital.Di4,
-                    (Cpu.Pin)FEZ_Pin.Digital.Di5,
-                    (Cpu.Pin)FEZ_Pin.Digital.Di6
+                    (Cpu.Pin)FEZ_Pin.Digital.Di21,
+                    (Cpu.Pin)FEZ_Pin.Digital.Di23,
+                    (Cpu.Pin)FEZ_Pin.Digital.Di47,
+                    (Cpu.Pin)FEZ_Pin.Digital.Di46,
+                    (Cpu.Pin)FEZ_Pin.Digital.Di49,
+                    (Cpu.Pin)FEZ_Pin.Digital.Di48
                     );
 
             var display = new Lcd(transferProvider);
@@ -119,43 +122,3 @@ namespace WeatherStation
         public static double Average(object[] array) { return Sum(array)/array.Length; }
     }
 }
-//using System;
-//using System.Threading;
-
-//using Microsoft.SPOT;
-//using Microsoft.SPOT.Hardware;
-
-//using GHIElectronics.NETMF.FEZ;
-//using WeatherStation.Sensors;
-
-//namespace WeatherStation
-//{
-//    public class Program
-//    {
-//        public static void Main()
-//        {
-//            // Blink board LED
-
-//            var ledState = false;
-
-//            var led = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.LED, ledState);
-
-//            while (true)
-//            {
-//                // Sleep for 500 milliseconds
-//                Thread.Sleep(10000);
-
-//                // toggle LED state
-//                ledState = !ledState;
-//                led.Write(ledState);
-
-//                var sensor = new MPL1151A();
-//                sensor.Start();
-//                Debug.Print(sensor.TemperatureF.ToString());
-//                sensor.Stop();
-//            }
-//        }
-
-//    }
-//}
-
