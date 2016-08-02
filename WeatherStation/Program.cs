@@ -8,6 +8,7 @@ using Microsoft.SPOT.Hardware;
 
 using GHIElectronics.NETMF.FEZ;
 using WeatherStation.Sensors;
+using GHIElectronics.NETMF.System;
 
 namespace WeatherStation
 {
@@ -35,7 +36,8 @@ namespace WeatherStation
             var readings = new System.Collections.Queue();
 
             var humidity = new AnalogIn(AnalogIn.Pin.Ain0);
-                
+            var thermistor = new AnalogIn(AnalogIn.Pin.Ain5);
+
             while (true)
             {
                 Thread.Sleep(1000);
@@ -52,14 +54,20 @@ namespace WeatherStation
 
                 Debug.Print(temp.ToString("F1"));
 
+                var value = thermistor.Read();
+                temp = System.Math.Round(ConvertADCToTemperature(value) * 10) / 10;
+                Debug.Print(temp.ToString("F1"));
+
                 if (temp < 235.8D)
                     readings.Enqueue(temp);
                 else
                     Debug.Print("Ignoring reading out of variance: " + temp);
+
                 if (readings.Count < 5) continue;
+
                 var temps = readings.ToArray();
                 var averageTemp = ArrayExtensions.Average(temps);
-                readings.Dequeue();
+                readings.Dequeue(); 
                 var tempStr = averageTemp.ToString("F1");
                 var padLength = 8 - tempStr.Length;
                 for (int i = 0; i < padLength; i++)
@@ -105,6 +113,32 @@ namespace WeatherStation
             return display;
         }
 
+        // B 3434K
+        // R1 = 10000, R2 = 1452.2, T2=84.999
+        // alpha tcr = -4.6025 %/C
+        // operating current @ 25: 0.12mA, rated power @ 25: 7.5mW, Dissipation @ 25: 1.5mW, Thermal time const @ 25: 4C/s
+        // R25 is zero-power resistance at 25°C.
+
+        // a = 0.8837602138 * e-3, b = 2.519657770 e-4, c = 1.914277212 e-7
+
+        // a = 0.000883760213800
+        // b = 0.000251965777
+        // c = 0.000000191427721
+        static double ConvertADCToTemperature(int value)
+        {
+            // Inputs ADC Value from Thermistor and outputs Temperature in Celsius
+            // Utilizes the Steinhart-Hart Thermistor Equation:
+            //    Temperature in Kelvin = 1 / {A + B[ln(R)] + C[ln(R)]^3}
+            //    where A = 0.001129148, B = 0.000234125 and C = 8.76741E-08
+            double Resistance; double Temp;  // Dual-Purpose variable to save space.
+            Resistance = 11452.2 * ((1024.0 / value) - 1);  // Assuming a 10k Thermistor.  Calculation is actually: Resistance = (1024 /ADC -1) * BalanceResistor
+            // For a GND-Thermistor-PullUp--Varef circuit it would be Rtherm=Rpullup/(1024.0/ADC-1)
+            Temp = MathEx.Log(Resistance); // Saving the Log(resistance) so not to calculate it 4 times later. // "Temp" means "Temporary" on this line.
+            Temp = 1 / (0.000883760213800 + (0.000251965777 * Temp) + (0.000000191427721 * Temp * Temp * Temp));   // Now it means both "Temporary" and "Temperature"
+            Temp = Temp - 273.15;  // Convert Kelvin to Celsius                                         // Now it only means "Temperature"
+            Temp = 1.8f * Temp + 32;
+            return Temp;
+        }
     }
 
     public static class ArrayExtensions
