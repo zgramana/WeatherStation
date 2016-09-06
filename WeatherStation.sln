@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherStation", "WeatherStation\WeatherStation.csproj", "{2CE5B019-906F-4F94-8C44-1EAF25C528EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLiquidCrystal", "Micro Liquid Crystal\MicroLiquidCrystal.csproj", "{B4B72543-E638-44F1-B096-9BBB6BD4698B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewWeather", "NewWeather\NewWeather.csproj", "{B249D590-F512-43E6-A77E-76CE8AA6BF58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +23,12 @@ Global
 		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4B72543-E638-44F1-B096-9BBB6BD4698B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B249D590-F512-43E6-A77E-76CE8AA6BF58}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

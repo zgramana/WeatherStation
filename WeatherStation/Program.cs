@@ -20,7 +20,7 @@ namespace WeatherStation
         {
             // Blink board LED
 
-            var ledState = false;
+            var ledState = true;
 
             var led = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.LED, ledState);
 
@@ -37,48 +37,76 @@ namespace WeatherStation
 
             var humidity = new AnalogIn(AnalogIn.Pin.Ain0);
             var thermistor = new AnalogIn(AnalogIn.Pin.Ain5);
+            int i, thermistorSample, padLength;
+            double temp = 0;
+            double tempF = 0;
+            double rh = 0D;
+            double[] temps = new double[5];
+            string tempStr, humidityStr;
 
             while (true)
             {
                 Thread.Sleep(1000);
                 
                 // toggle LED state
-                ledState = !ledState;
-                led.Write(ledState);
+                //ledState = !ledState;
+                //led.Write(ledState);
 
-                var sensor = new MPL1151A();
-                sensor.Start();
-                var temp = sensor.TemperatureF;
-                sensor.Stop();
+                //var sensor = new MPL1151A();
+                //sensor.Start();
+                //var temp = sensor.TemperatureF;
+                //sensor.Stop();
                 //var temp = PressureSensor.calculatePressure();
 
-                Debug.Print(temp.ToString("F1"));
+                //Debug.Print(temp.ToString("F1"));
+                for (i = 0; i < 5; i++)
+                {
+                    thermistorSample = thermistor.Read();
+                    //Debug.Print(thermistorSample.ToString("F1"));
+                    temp = ConvertADCToTemperature(thermistorSample);
+                    //Debug.Print(temp.ToString("F1"));
+                    //temp = System.Math.Round(temp * 10D) / 10D;
+                    temps[i] = temp;
+                    Thread.Sleep(20);
+                }
+                
+                //if (tempF < 235.8D)
+                //    readings.Enqueue(tempF);
+                //else
+                //    Debug.Print("Ignoring reading out of variance: " + tempF);
 
-                var value = thermistor.Read();
-                temp = System.Math.Round(ConvertADCToTemperature(value) * 10) / 10;
-                Debug.Print(temp.ToString("F1"));
+                //if (readings.Count < 5) continue;
 
-                if (temp < 235.8D)
-                    readings.Enqueue(temp);
-                else
-                    Debug.Print("Ignoring reading out of variance: " + temp);
-
-                if (readings.Count < 5) continue;
-
-                var temps = readings.ToArray();
-                var averageTemp = ArrayExtensions.Average(temps);
-                readings.Dequeue(); 
-                var tempStr = averageTemp.ToString("F1");
-                var padLength = 8 - tempStr.Length;
-                for (int i = 0; i < padLength; i++)
+                //var temps = readings.ToArray();
+                temp = ArrayExtensions.Average(temps);
+                Array.Clear(temps, 0, 5);
+                tempF = (1.8D * temp) + 32;
+                tempStr = tempF.ToString("F1");
+                padLength = 8 - tempStr.Length;
+                for (i = 0; i < padLength; i++)
                 {
                     tempStr += " ";
                 }
-                var humidityStr = ((humidity.Read() / 1024F)* 100F).ToString("F1") + "%";
+
+                rh = SampleHumidity(humidity.Read(), temp);
+                humidityStr = rh.ToString("F1") + "%";
                 message = MainModeHeader + tempStr + humidityStr;
-                Debug.Print(message);
+                //Debug.Print(message);
                 ShowMessage(message, display);          
             }
+            greenBacklight.Write(false);
+            greenBacklight.Dispose();
+        }
+
+        const double supplyVoltage = 5.0D;
+        static double voltage, sensorRH, tempCompensatedRH; // Reuse to reduce GC pressure
+        private static double SampleHumidity(int sample, double temp)
+        {
+            voltage = sample / 1023D * supplyVoltage;
+            //voltage = supplyVoltage * (0.0062D * sample + 0.16);
+            sensorRH = 161D * voltage / supplyVoltage - 25.8;
+            tempCompensatedRH = sensorRH / (1.0546 - 0.00216 * temp);
+            return tempCompensatedRH;
         }
 
         private static void ShowMessage(string message, Lcd display)
@@ -131,19 +159,21 @@ namespace WeatherStation
             //    Temperature in Kelvin = 1 / {A + B[ln(R)] + C[ln(R)]^3}
             //    where A = 0.001129148, B = 0.000234125 and C = 8.76741E-08
             double Resistance; double Temp;  // Dual-Purpose variable to save space.
-            Resistance = 11452.2 * ((1024.0 / value) - 1);  // Assuming a 10k Thermistor.  Calculation is actually: Resistance = (1024 /ADC -1) * BalanceResistor
+            Resistance = 10000;
+            Resistance = Resistance * ((1024D / value) - 1D);  // Assuming a 10k Thermistor.  Calculation is actually: Resistance = (1024 /ADC -1) * BalanceResistor
             // For a GND-Thermistor-PullUp--Varef circuit it would be Rtherm=Rpullup/(1024.0/ADC-1)
             Temp = MathEx.Log(Resistance); // Saving the Log(resistance) so not to calculate it 4 times later. // "Temp" means "Temporary" on this line.
-            Temp = 1 / (0.000883760213800 + (0.000251965777 * Temp) + (0.000000191427721 * Temp * Temp * Temp));   // Now it means both "Temporary" and "Temperature"
+            //Temp = 1 / (0.000883760213800 + (0.000251965777 * Temp) + (0.000000191427721 * Temp * Temp * Temp));   // Now it means both "Temporary" and "Temperature"
+            Temp = 1 / (0.001129148 + (0.000234125 * Temp) + (0.0000000876741 * Temp * Temp * Temp));   // Now it means both "Temporary" and "Temperature"
             Temp = Temp - 273.15;  // Convert Kelvin to Celsius                                         // Now it only means "Temperature"
-            Temp = 1.8f * Temp + 32;
+            //Temp = 1.8f * Temp + 32;
             return Temp;
         }
     }
 
     public static class ArrayExtensions
     {
-        public static double Sum(object[] array)
+        public static double Sum(double[] array)
         {
             var result = 0D;
             for (int i = 0; i < array.Length; i++)
@@ -153,6 +183,6 @@ namespace WeatherStation
             return result ;
         }
 
-        public static double Average(object[] array) { return Sum(array)/array.Length; }
+        public static double Average(double[] array) { return Sum(array)/array.Length; }
     }
 }
