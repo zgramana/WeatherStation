@@ -42,6 +42,7 @@ namespace WeatherStation
             double tempF = 0;
             double rh = 0D;
             double[] temps = new double[5];
+            double[] humiditySamples = new double[10];
             string tempStr, humidityStr;
 
             while (true)
@@ -58,26 +59,15 @@ namespace WeatherStation
                 //sensor.Stop();
                 //var temp = PressureSensor.calculatePressure();
 
-                //Debug.Print(temp.ToString("F1"));
                 for (i = 0; i < 5; i++)
                 {
                     thermistorSample = thermistor.Read();
-                    //Debug.Print(thermistorSample.ToString("F1"));
                     temp = ConvertADCToTemperature(thermistorSample);
-                    //Debug.Print(temp.ToString("F1"));
-                    //temp = System.Math.Round(temp * 10D) / 10D;
                     temps[i] = temp;
+                    humiditySamples[i] = SampleHumidity(humidity.Read(), temp);
                     Thread.Sleep(20);
                 }
                 
-                //if (tempF < 235.8D)
-                //    readings.Enqueue(tempF);
-                //else
-                //    Debug.Print("Ignoring reading out of variance: " + tempF);
-
-                //if (readings.Count < 5) continue;
-
-                //var temps = readings.ToArray();
                 temp = ArrayExtensions.Average(temps);
                 Array.Clear(temps, 0, 5);
                 tempF = (1.8D * temp) + 32;
@@ -88,10 +78,15 @@ namespace WeatherStation
                     tempStr += " ";
                 }
 
-                rh = SampleHumidity(humidity.Read(), temp);
+                for (i = 0; i < 10; i++)
+                {
+                    humiditySamples[i] = SampleHumidity(humidity.Read(), temp);
+                    Thread.Sleep(10);
+                }
+                
+                rh = ArrayExtensions.Average(humiditySamples);
                 humidityStr = rh.ToString("F1") + "%";
                 message = MainModeHeader + tempStr + humidityStr;
-                //Debug.Print(message);
                 ShowMessage(message, display);          
             }
             greenBacklight.Write(false);
@@ -102,9 +97,9 @@ namespace WeatherStation
         static double voltage, sensorRH, tempCompensatedRH; // Reuse to reduce GC pressure
         private static double SampleHumidity(int sample, double temp)
         {
-            voltage = sample / 1023D * supplyVoltage;
+            sensorRH = ((sample / 1024D) - 0.16D) / 0.0062D;
             //voltage = supplyVoltage * (0.0062D * sample + 0.16);
-            sensorRH = 161D * voltage / supplyVoltage - 25.8;
+            //sensorRH = 161D * voltage / supplyVoltage - 25.8;
             tempCompensatedRH = sensorRH / (1.0546 - 0.00216 * temp);
             return tempCompensatedRH;
         }
