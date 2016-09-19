@@ -20,8 +20,7 @@ namespace WeatherStation
         {
             // Blink board LED
 
-            var ledState = true;
-
+            var ledState = false;
             var led = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.LED, ledState);
 
             // Enable LCD.
@@ -29,7 +28,9 @@ namespace WeatherStation
             display.Clear();
             // Turn on backlight
             var greenBacklight = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.Di51, true);
-            
+            var redBacklight = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.Di50, true);
+            var blueBacklight = new OutputPort((Cpu.Pin)FEZ_Pin.Digital.Di52, true);
+
             ShowMessage("Weather Station;1.0", display);
 
             String message;
@@ -44,15 +45,9 @@ namespace WeatherStation
             double[] temps = new double[5];
             double[] humiditySamples = new double[10];
             string tempStr, humidityStr;
-
+            Boolean firstLoop = true;
             while (true)
             {
-                Thread.Sleep(1000);
-                
-                // toggle LED state
-                //ledState = !ledState;
-                //led.Write(ledState);
-
                 //var sensor = new MPL1151A();
                 //sensor.Start();
                 //var temp = sensor.TemperatureF;
@@ -64,13 +59,29 @@ namespace WeatherStation
                     thermistorSample = thermistor.Read();
                     temp = ConvertADCToTemperature(thermistorSample);
                     temps[i] = temp;
-                    humiditySamples[i] = SampleHumidity(humidity.Read(), temp);
                     Thread.Sleep(20);
                 }
                 
                 temp = ArrayExtensions.Average(temps);
-                Array.Clear(temps, 0, 5);
                 tempF = (1.8D * temp) + 32;
+                if (tempF < 69.0D)
+                {
+                    greenBacklight.Write(false);
+                    blueBacklight.Write(true);
+                    redBacklight.Write(false);
+                }
+                else if (tempF > 73.0D)
+                {
+                    greenBacklight.Write(false);
+                    blueBacklight.Write(false);
+                    redBacklight.Write(true);
+                }
+                else
+                {
+                    greenBacklight.Write(true);
+                    blueBacklight.Write(false);
+                    redBacklight.Write(false);
+                }
                 tempStr = tempF.ToString("F1");
                 padLength = 8 - tempStr.Length;
                 for (i = 0; i < padLength; i++)
@@ -85,21 +96,32 @@ namespace WeatherStation
                 }
                 
                 rh = ArrayExtensions.Average(humiditySamples);
-                humidityStr = rh.ToString("F1") + "%";
-                message = MainModeHeader + tempStr + humidityStr;
-                ShowMessage(message, display);          
+                if (firstLoop)
+                {
+                    humidityStr = rh.ToString("F1") + "%";
+                    message = MainModeHeader + ";" + tempStr + humidityStr;
+                    ShowMessage(message, display);
+                    firstLoop = false;
+                }
+                else
+                {
+                    humidityStr = rh.ToString("F1") + "%";
+                    message = tempStr + humidityStr;
+                    UpdateMessage(message, display);
+                }
+
+                Thread.Sleep(1000);
             }
-            greenBacklight.Write(false);
-            greenBacklight.Dispose();
         }
 
-        const double supplyVoltage = 5.0D;
-        static double voltage, sensorRH, tempCompensatedRH; // Reuse to reduce GC pressure
+        const double supplyVoltage = 4.68D; // Onboard voltage regulator stays pretty solid here. On USB, it's 4.71.
+        const double analogInputReferenceVoltage = 3.3D; // AIref pin shunted to 3.3v in Panda II according to the forums. https://www.ghielectronics.com/community/forum/topic?id=14389
+        const double zeroOffset = 0.16D * supplyVoltage;
+        const double slope = 0.0062D * supplyVoltage;
+        static double sensorRH, tempCompensatedRH; // Reuse to reduce GC pressure
         private static double SampleHumidity(int sample, double temp)
         {
-            sensorRH = ((sample / 1024D) - 0.16D) / 0.0062D;
-            //voltage = supplyVoltage * (0.0062D * sample + 0.16);
-            //sensorRH = 161D * voltage / supplyVoltage - 25.8;
+            sensorRH = (((sample * analogInputReferenceVoltage) / 1023D) - zeroOffset) / slope;
             tempCompensatedRH = sensorRH / (1.0546 - 0.00216 * temp);
             return tempCompensatedRH;
         }
@@ -115,6 +137,20 @@ namespace WeatherStation
 
             display.SetCursorPosition(0, 1);
             display.Write(lines[1]);
+        }
+
+        private static void UpdateMessage(string message, Lcd display)
+        {
+            display.SetCursorPosition(0, 1);
+            foreach (var c in message)
+            {
+                if (c == ' ')
+                {
+                    display.MoveCursor(true);
+                    continue;
+                }
+                display.WriteByte((byte)c);
+            }
         }
 
         private static Lcd ConfigureLiquidCrystalDisplay()
